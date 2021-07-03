@@ -1,6 +1,6 @@
 ## DOCUMENTACION DE LA BASE DE DATOS
 
-### ***UPDATED*** : 30-06-2021
+### ***UPDATED*** : 03-07-2021
 ---
 
 ### ***Stored Procedures***
