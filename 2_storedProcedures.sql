@@ -116,4 +116,30 @@ BEGIN
 	END IF;
 END$$
 
+-- Obtener departamento
+DROP PROCEDURE IF EXISTS sp_getDep$$
+CREATE PROCEDURE sp_getDep()
+BEGIN
+    SELECT 
+        id, name_department AS "department" 
+    FROM 
+        Departments
+    ;
+END$$
+
+-- Obtener municipio
+DROP PROCEDURE IF EXISTS sp_getMun$$
+CREATE PROCEDURE sp_getMun(
+    IN IDD INT
+)
+BEGIN
+    SELECT
+        id, name_municipality AS "municipality"
+    FROM
+        Municipality
+    WHERE
+        id_department = IDD
+    ;
+END$$
+
 DELIMITER ;

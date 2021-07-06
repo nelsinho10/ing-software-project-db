@@ -1,6 +1,6 @@
 ## DOCUMENTACION DE LA BASE DE DATOS
 
-### ***UPDATED*** : 03-07-2021
+### ***UPDATED*** : 05-07-2021
 ---
 
 ### ***Stored Procedures***
@@ -33,3 +33,14 @@
         - Usuario Existe -> Retorna datos del usuario
         - Usuario no Existe-> Retorna 0
 
+4. **sp_getDep()**
+    - ***Parametros:***
+        - ninguno
+    - ***Retorno:***
+        - Todos los departamenos con su respectivo id
+
+5. **sp_getMun()**
+    - ***Parametros:***
+        - id del departamento
+    - ***Retorno:***
+        - Retorna el id y el nombre del municipio que pertenece al departamento recibido
