@@ -1,10 +1,13 @@
 ## DOCUMENTACION DE LA BASE DE DATOS
 
-### ***UPDATED*** : 05-07-2021
+### ***UPDATED*** : 08-07-2021
+___
+___
+
+### ***------------------------------------------------- Stored Procedures -------------------------------------------------***
+
+### ***Users***
 ---
-
-### ***Stored Procedures***
-
 1. **sp_createUser()**
     - ***Parametros:***
         - nombre de usuario
@@ -33,14 +36,117 @@
         - Usuario Existe -> Retorna datos del usuario
         - Usuario no Existe-> Retorna 0
 
-4. **sp_getDep()**
+4. **sp_getUserID()**
+    - ***Parametros:***
+        - id del usuario
+    - ***Retorno:***
+        - Retorna todo el usuario
+
+### ***Depto and Mun***
+---
+
+5. **sp_getDep()**
     - ***Parametros:***
         - ninguno
     - ***Retorno:***
         - Todos los departamenos con su respectivo id
 
-5. **sp_getMun()**
+6. **sp_getMun()**
     - ***Parametros:***
         - id del departamento
     - ***Retorno:***
         - Retorna el id y el nombre del municipio que pertenece al departamento recibido
+
+### ***Publications***
+---
+
+7. **sp_getCategories()**
+    - ***Parametros:***
+        - ninguno
+    - ***Retorno:***
+        - id de las categorias
+        - nombre de las categorias
+
+8. **sp_createPublication()**
+    - ***Parametros:***
+        - id del usuario
+        - titulo de la publicacion
+        - id de la categoria
+        - descripcion de la publicacion
+        - precio
+    - ***Retorno:***
+        - id de la publicacion
+
+9. **sp_getPublicationsAll()**
+    - ***Parametros:***
+        - ninguno
+    - ***Retorno:***
+        - id de la publicacion
+        - titulo de la publicacion
+        - precio
+        - fecha de la publicacion
+        - nombre de la categoria
+        - id del usuario que creo la publicacion
+        - nombre del usuario que creo la publicacion
+        - departamento del usuario
+        - municipio del usuario
+
+10. **sp_getPublicationUserID()**
+    - ***Parametros:***
+        - id del usuario
+    - ***Retorno:***
+        - id de la publicacion
+        - titulo de la publicacion
+        - precio
+        - fecha de la publicacion
+        - nombre de la categoria
+        - id del usuario que creo la publicacion
+        - nombre del usuario que creo la publicacion
+        - departamento del usuario
+        - municipio del usuario
+
+11. **sp_getPublicationID()**
+    - ***Parametros:***
+        - id de la publicacion
+    - ***Retorno:***
+        - id de la publicacion
+        - titulo de la publicacion
+        - precio
+        - fecha de la publicacion
+        - nombre de la categoria
+        - id del usuario que creo la publicacion
+        - nombre del usuario que creo la publicacion
+        - departamento del usuario
+        - municipio del usuario
+
+### ***Image***
+---
+
+12. **sp_savedImagePublication()**
+    - ***Parametros:***
+        - nombre de la imagen
+        - data de la imagen
+        - id de la publicacion
+        - formato de la imagen
+    - ***Retorno:***
+        - ninguno
+
+13. **sp_savedImageProfile()**
+    - ***Parametros:***
+        - nombre de la imagen
+        - data de la imagen
+        - id del usuario
+        - formato de la imagen(PNG/JPG)
+    - ***Retorno:***
+        - ninguno
+
+14. **sp_getImageProduct()**
+    - ***Parametros:***
+        - id del producto
+    - ***Retorno:***
+        - id de las imagenes
+        - nombre de las imagenes
+        - fecha de subida de la imagen
+        - formato de la imagen (PNG/JPG)
+
+

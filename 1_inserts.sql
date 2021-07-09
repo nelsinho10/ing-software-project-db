@@ -1,7 +1,9 @@
 -- Insertando datos iniciales a la base de datos de
 USE Marketplace;
 
-INSERT INTO Departments(name_department) VALUES 
+INSERT INTO 
+    Departments(name_department) 
+VALUES 
     ("Atlantida"),
     ("Colon"),
     ("Comayagua"),
@@ -22,7 +24,9 @@ INSERT INTO Departments(name_department) VALUES
     ("Yoro")
 ;
 
-INSERT INTO Municipality(name_municipality,id_department) VALUES
+INSERT INTO 
+    Municipality(name_municipality,id_department) 
+VALUES
     ("La Ceiba",1),
     ("Tela",1),
     ("Jutiapa",1),
@@ -321,4 +325,19 @@ INSERT INTO Municipality(name_municipality,id_department) VALUES
     ("Sulaco",18),
     ("Victoria",18),
     ("Yorito",18)
+;
+
+INSERT INTO
+    Categories(name_category)
+VALUES
+    ("Inmuebles"),
+    ("Vehiculos"),
+    ("Hogar"),
+    ("Moda"),
+    ("Futuros padres"),
+    ("Mascotas"),
+    ("Electronica"),
+    ("Servicios"),
+    ("Negocios"),
+    ("Empleo")
 ;

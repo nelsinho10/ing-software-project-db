@@ -56,6 +56,7 @@ CREATE TABLE IF NOT EXISTS Users(
 
 CREATE TABLE IF NOT EXISTS Publications(
     id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(200) NOT NULL,
     date_publication TIMESTAMP DEFAULT NOW(),
     desc_publication TEXT NOT NULL,
     user_id INT NOT NULL,
@@ -110,10 +111,12 @@ CREATE TABLE IF NOT EXISTS Images(
     id INT PRIMARY KEY AUTO_INCREMENT,
     name_img VARCHAR(200) NOT NULL,
     date_publication TIMESTAMP DEFAULT NOW(),
-    data_img BLOB NOT NULL,
-    publications_id INT,
+    data_img LONGBLOB NOT NULL,
+    type_img ENUM("publication","profile") NOT NULL,
+    format_img VARCHAR(200) NOT NULL,
+    publication_id INT,
     user_id INT,
-    FOREIGN KEY(publications_id) REFERENCES Publications(id)
+    FOREIGN KEY(publication_id) REFERENCES Publications(id)
     ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY(user_id) REFERENCES Users(id)
     ON DELETE CASCADE ON UPDATE CASCADE

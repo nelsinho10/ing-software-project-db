@@ -142,4 +142,275 @@ BEGIN
     ;
 END$$
 
+-- Obtener usuario por id
+DROP PROCEDURE IF EXISTS sp_getUserID$$
+CREATE PROCEDURE sp_getUserID(
+    IN USER INT
+)
+BEGIN
+    SELECT 
+	    Users.id AS "id",email,
+        phone, name_department AS "department", 
+        name_municipality AS "municipality", 
+        description AS "direction", date_registered
+    FROM 
+    	Users 
+    JOIN 
+    	Direction 
+    ON 
+    	Users.direction_id = Direction.id 
+    JOIN 
+    	Municipality 
+    ON 
+    	Direction.municipality_id = Municipality.id 
+    JOIN 
+    	Departments 
+    ON 
+        Municipality.id_department = Departments.id
+    WHERE
+        Users.id = USER
+    LIMIT
+        1
+    ;
+END$$
+
+-- Obtener categorias
+DROP PROCEDURE IF EXISTS sp_getCategories$$
+CREATE PROCEDURE sp_getCategories()
+BEGIN
+    SELECT 
+        id, name_Category
+    FROM 
+        Categories
+    WHERE
+        state_category = TRUE
+    ; 
+END$$
+
+-- Crear publicacion
+DROP PROCEDURE IF EXISTS sp_createPublication$$
+CREATE PROCEDURE sp_createPublication(
+    IN USERID INT,
+    IN TITLEPU VARCHAR(200),
+    IN CATEGORYID INT,
+    IN DESCRIP TEXT,
+    IN PRICEPRO DECIMAL(10,2)
+)
+BEGIN
+    -- obtener informacion del usuario
+    SELECT
+        name_user, direction_id
+    INTO
+        @NAMEUSER, @DIR
+    FROM
+        Users
+    WHERE
+        id = USERID
+    ;
+
+    -- obtener el dep y mun
+    SELECT
+        department_id, municipality_id
+    INTO
+        @DEPTOID, @MUNID
+    FROM
+        Direction
+    WHERE
+       id = @DIR 
+    ;
+
+    INSERT INTO
+        Publications(
+            title,desc_publication,user_id,
+            department_id, municipality_id,
+            category_id, price
+        )
+    VALUES
+        (TITLEPU,DESCRIP,USERID,
+        @DEPTOID,@MUNID,
+        CATEGORYID,PRICEPRO)
+    ; 
+
+    -- retornar el id de la publicaion
+    SELECT 
+        id
+    FROM
+        Publications
+    WHERE
+        user_id = USERID
+    ORDER BY
+        id DESC
+    LIMIT
+        1
+    ;
+
+END$$
+
+
+-- Guardar imagenes de publicacion
+DROP PROCEDURE IF EXISTS sp_savedImagePublication$$
+CREATE PROCEDURE sp_savedImagePublication(
+    IN NAMEI VARCHAR(200),
+    IN DATAIMAGE BLOB,
+    IN PUBLICID INT,
+    IN FORIMG VARCHAR(200)
+)
+BEGIN
+    INSERT INTO
+        Images(name_img, data_img,
+        type_img, publication_id, format_img)
+    VALUES
+        (NAMEI, DATAIMAGE,"publication", PUBLICID, FORIMG)
+    ;
+END$$
+
+-- Guardar imagenes de perfil
+DROP PROCEDURE IF EXISTS sp_savedImageProfile$$
+CREATE PROCEDURE sp_savedImageProfile(
+    IN NAMEI VARCHAR(200),
+    IN DATAIMAGE BLOB,
+    IN USER INT,
+    IN FORIMG VARCHAR(200)
+)
+BEGIN
+    INSERT INTO
+        Images(name_img, data_img,
+        type_img, user_id, format_img)
+    VALUES
+        (NAMEI, DATAIMAGE,"profile", USER, FORIMG)
+    ;
+END$$
+
+-- Obtener todas las publicaciones
+DROP PROCEDURE IF EXISTS sp_getPublicationsAll$$
+CREATE PROCEDURE sp_getPublicationsAll(
+)
+BEGIN
+   SELECT
+	    Publications.id AS "id_publication", 
+        title, desc_publication AS "description", 
+        price,date_publication AS "date_publication",
+        Categories.name_category AS "category",
+        user_id AS "id_user", Users.name_user AS "name_user",
+        Departments.name_department AS "depto",
+        Municipality.name_municipality AS "munic"
+    FROM
+    	Publications
+    JOIN
+    	Users
+    ON 
+    	Publications.user_id = Users.id
+    JOIN
+    	Departments
+    ON
+    	Publications.department_id = Departments.id
+    JOIN
+    	Municipality
+    ON
+    	Publications.municipality_id = Municipality.id
+    JOIN
+    	Categories
+    ON 
+    	Publications.category_id = Categories.id
+    WHERE
+    	(state_publication = TRUE AND Categories.state_category = TRUE)
+    ;
+END$$
+
+-- Obtener todas las imagenes
+DROP PROCEDURE IF EXISTS sp_getImageProduct$$
+CREATE PROCEDURE sp_getImageProduct(
+    IN ID INT
+)
+BEGIN
+    SELECT
+        Images.id AS "id_image", name_img,
+        date_publication,
+        data_img AS "data",
+        format_img AS "format"
+    FROM
+        Images
+    WHERE
+        publication_id = ID
+    ;
+END$$
+
+
+-- Obtener publicaciones por el id de usuario
+DROP PROCEDURE IF EXISTS sp_getPublicationUserID$$
+CREATE PROCEDURE sp_getPublicationUserID(
+    IN IDUSER INT
+)
+BEGIN
+     SELECT
+	    Publications.id AS "id_publication", 
+        title, desc_publication AS "description", 
+        price,date_publication AS "date_publication",
+        Categories.name_category AS "category",
+        user_id AS "id_user", Users.name_user AS "name_user",
+        Departments.name_department AS "depto",
+        Municipality.name_municipality AS "munic"
+    FROM
+    	Publications
+    JOIN
+    	Users
+    ON 
+    	Publications.user_id = Users.id
+    JOIN
+    	Departments
+    ON
+    	Publications.department_id = Departments.id
+    JOIN
+    	Municipality
+    ON
+    	Publications.municipality_id = Municipality.id
+    JOIN
+    	Categories
+    ON 
+    	Publications.category_id = Categories.id
+    WHERE
+    	(state_publication = TRUE AND 
+        Categories.state_category = TRUE AND
+        user_id = IDUSER)
+    ;
+END$$
+
+-- Obtener publicaciones por id de publicacion
+DROP PROCEDURE IF EXISTS sp_getPublicationID$$
+CREATE PROCEDURE sp_getPublicationID(
+    IN IDP INT
+)
+BEGIN
+    SELECT
+	    Publications.id AS "id_publication", 
+        title, desc_publication AS "description", 
+        price,date_publication AS "date_publication",
+        Categories.name_category AS "category",
+        user_id AS "id_user", Users.name_user AS "name_user",
+        Departments.name_department AS "depto",
+        Municipality.name_municipality AS "munic"
+    FROM
+    	Publications
+    JOIN
+    	Users
+    ON 
+    	Publications.user_id = Users.id
+    JOIN
+    	Departments
+    ON
+    	Publications.department_id = Departments.id
+    JOIN
+    	Municipality
+    ON
+    	Publications.municipality_id = Municipality.id
+    JOIN
+    	Categories
+    ON 
+    	Publications.category_id = Categories.id
+    WHERE
+    	(state_publication = TRUE 
+        AND Categories.state_category = TRUE 
+        AND Publications.id = IDP)
+    ;
+END$$
 DELIMITER ;
