@@ -41,6 +41,7 @@ BEGIN
 
     SELECT 
 	Users.id AS "id",email,
+    Users.name_user AS "name",
     phone, name_department AS "department", 
     name_municipality AS "municipality", 
     description AS "direction", date_registered
@@ -91,6 +92,7 @@ BEGIN
     IF (@user_id != 0 AND @pass_query = PASSP) THEN
         SELECT 
             Users.id AS "id",email,
+            Users.name_user AS "name",
             phone, name_department AS "department", 
             name_municipality AS "municipality", 
             description AS "direction", date_registered
@@ -150,6 +152,7 @@ CREATE PROCEDURE sp_getUserID(
 BEGIN
     SELECT 
 	    Users.id AS "id",email,
+        Users.name_user AS "name",
         phone, name_department AS "department", 
         name_municipality AS "municipality", 
         description AS "direction", date_registered
