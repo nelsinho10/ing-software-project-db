@@ -295,6 +295,7 @@ BEGIN
         price,date_publication AS "date_publication",
         Categories.name_category AS "category",
         user_id AS "id_user", Users.name_user AS "name_user",
+        Users.email AS "email", Users.phone AS "phone",
         Departments.name_department AS "depto",
         Municipality.name_municipality AS "munic"
     FROM
@@ -351,6 +352,7 @@ BEGIN
         price,date_publication AS "date_publication",
         Categories.name_category AS "category",
         user_id AS "id_user", Users.name_user AS "name_user",
+        Users.email AS "email", Users.phone AS "phone",
         Departments.name_department AS "depto",
         Municipality.name_municipality AS "munic"
     FROM
@@ -390,6 +392,7 @@ BEGIN
         price,date_publication AS "date_publication",
         Categories.name_category AS "category",
         user_id AS "id_user", Users.name_user AS "name_user",
+        Users.email AS "email", Users.phone AS "phone",
         Departments.name_department AS "depto",
         Municipality.name_municipality AS "munic"
     FROM
