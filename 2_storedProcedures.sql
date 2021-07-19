@@ -419,4 +419,56 @@ BEGIN
         AND Publications.id = IDP)
     ;
 END$$
+
+-- Buscar Publicacion
+DROP PROCEDURE IF EXISTS sp_searchPublication$$
+CREATE PROCEDURE sp_searchPublication(
+    IN TEX VARCHAR(200)
+)
+BEGIN
+
+    IF(TEX != '') THEN
+        SELECT
+            Publications.id AS "id_publication", 
+            title, desc_publication AS "description", 
+            price,date_publication AS "date_publication",
+            Categories.name_category AS "category",
+            user_id AS "id_user", Users.name_user AS "name_user",
+            Users.email AS "email", Users.phone AS "phone",
+            Departments.name_department AS "depto",
+            Municipality.name_municipality AS "munic"
+        FROM
+            Publications
+        JOIN
+            Users
+        ON 
+            Publications.user_id = Users.id
+        JOIN
+            Departments
+        ON
+            Publications.department_id = Departments.id
+        JOIN
+            Municipality
+        ON
+            Publications.municipality_id = Municipality.id
+        JOIN
+            Categories
+        ON 
+            Publications.category_id = Categories.id
+        WHERE
+            (state_publication = TRUE 
+            AND 
+                Categories.state_category = TRUE 
+            AND 
+                (Publications.title LIKE CONCAT('%',TEX,'%')
+            OR 
+                Publications.desc_publication LIKE CONCAT('%',TEX,'%'))
+            )
+        ;
+    END IF;
+END$$
+
+-- Filtrar Publicacion
+-- Comentarios de Pefil
+-- Comentario de Producto
 DELIMITER ;
