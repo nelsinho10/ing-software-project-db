@@ -173,7 +173,7 @@ ___
 
 ### ***Comments***
 ---
-17. **sp_commentPerfil()**
+17. **sp_commentProfile()**
     - ***Parametros:***
         - ID del perfil que se desea comentar
         - ID del Usuario que comenta

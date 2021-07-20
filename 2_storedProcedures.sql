@@ -605,8 +605,8 @@ BEGIN
 END$$
 
 -- Comentarios de Pefil
-DROP PROCEDURE IF EXISTS sp_commentPerfil$$
-CREATE PROCEDURE sp_commentPerfil(
+DROP PROCEDURE IF EXISTS sp_commentProfile$$
+CREATE PROCEDURE sp_commentProfile(
     IN IDPU INT,
     IN IDU INT,
     IN QUA INT,
