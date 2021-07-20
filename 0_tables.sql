@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS Comments(
     type_comment ENUM("user","publications") DEFAULT "publications",
     user_id INT NOT NULL,
     user_comment INT NOT NULL,
-    qualification ENUM("1","2","3","4","5"),
+    qualification INT,
     date_comments TIMESTAMP DEFAULT NOW(),
     publication_id INT,
     FOREIGN KEY(user_id) REFERENCES Users(id)

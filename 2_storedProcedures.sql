@@ -469,6 +469,238 @@ BEGIN
 END$$
 
 -- Filtrar Publicacion
+DROP PROCEDURE IF EXISTS sp_filteredPublication$$
+CREATE PROCEDURE sp_filteredPublication(
+    IN CAT VARCHAR(200),
+    IN DEP VARCHAR(200),
+    IN MUN VARCHAR(200),
+    IN RANINF DECIMAL(10,2),
+    IN RANSUP DECIMAL(10,2),
+    IN ORDATE VARCHAR(200),
+    IN ORPRICE VARCHAR(200)
+)
+BEGIN  
+   IF(ORDATE = 'reciente' AND ORPRICE = '') THEN
+    SELECT
+	    Publications.id AS "id_publication", 
+        title, desc_publication AS "description", 
+        price,date_publication AS "date_publication",
+        Categories.name_category AS "category",
+        user_id AS "id_user", Users.name_user AS "name_user",
+        Users.email AS "email", Users.phone AS "phone",
+        Departments.name_department AS "depto",
+        Municipality.name_municipality AS "munic"
+    FROM
+    	Publications
+    JOIN
+    	Users
+    ON 
+    	Publications.user_id = Users.id
+    JOIN
+    	Departments
+    ON
+    	Publications.department_id = Departments.id
+    JOIN
+    	Municipality
+    ON
+    	Publications.municipality_id = Municipality.id
+    JOIN
+    	Categories
+    ON 
+    	Publications.category_id = Categories.id
+    WHERE
+    	(state_publication = TRUE AND 
+        Categories.state_category = TRUE AND
+        (
+            Categories.name_category REGEXP IF(CAT='','.',CONCAT('^',CAT,'$')) AND
+            Departments.name_department REGEXP IF(DEP='','.',CONCAT('^',DEP,'$')) AND
+            Municipality.name_municipality REGEXP IF(MUN='','.',CONCAT('^',MUN,'$')) AND
+            (Publications.price BETWEEN RANINF AND RANSUP)
+        )
+        )
+    ORDER BY 
+        Publications.date_publication DESC
+    ;
+   ELSEIF(ORDATE = '' AND ORPRICE = 'caro') THEN
+    SELECT
+	    Publications.id AS "id_publication", 
+        title, desc_publication AS "description", 
+        price,date_publication AS "date_publication",
+        Categories.name_category AS "category",
+        user_id AS "id_user", Users.name_user AS "name_user",
+        Users.email AS "email", Users.phone AS "phone",
+        Departments.name_department AS "depto",
+        Municipality.name_municipality AS "munic"
+    FROM
+    	Publications
+    JOIN
+    	Users
+    ON 
+    	Publications.user_id = Users.id
+    JOIN
+    	Departments
+    ON
+    	Publications.department_id = Departments.id
+    JOIN
+    	Municipality
+    ON
+    	Publications.municipality_id = Municipality.id
+    JOIN
+    	Categories
+    ON 
+    	Publications.category_id = Categories.id
+    WHERE
+    	(state_publication = TRUE AND 
+        Categories.state_category = TRUE AND
+        (
+            Categories.name_category REGEXP IF(CAT='','.',CONCAT('^',CAT,'$')) AND
+            Departments.name_department REGEXP IF(DEP='','.',CONCAT('^',DEP,'$')) AND
+            Municipality.name_municipality REGEXP IF(MUN='','.',CONCAT('^',MUN,'$')) AND
+            (Publications.price BETWEEN RANINF AND RANSUP)
+        )
+        )
+    ORDER BY 
+        Publications.price DESC
+    ;
+   ELSE
+    SELECT
+	    Publications.id AS "id_publication", 
+        title, desc_publication AS "description", 
+        price,date_publication AS "date_publication",
+        Categories.name_category AS "category",
+        user_id AS "id_user", Users.name_user AS "name_user",
+        Users.email AS "email", Users.phone AS "phone",
+        Departments.name_department AS "depto",
+        Municipality.name_municipality AS "munic"
+    FROM
+    	Publications
+    JOIN
+    	Users
+    ON 
+    	Publications.user_id = Users.id
+    JOIN
+    	Departments
+    ON
+    	Publications.department_id = Departments.id
+    JOIN
+    	Municipality
+    ON
+    	Publications.municipality_id = Municipality.id
+    JOIN
+    	Categories
+    ON 
+    	Publications.category_id = Categories.id
+    WHERE
+    	(state_publication = TRUE AND 
+        Categories.state_category = TRUE AND
+        (
+            Categories.name_category REGEXP IF(CAT='','.',CONCAT('^',CAT,'$')) AND
+            Departments.name_department REGEXP IF(DEP='','.',CONCAT('^',DEP,'$')) AND
+            Municipality.name_municipality REGEXP IF(MUN='','.',CONCAT('^',MUN,'$')) AND
+            (Publications.price BETWEEN RANINF AND RANSUP)
+        )
+        );
+    
+   END IF;
+END$$
+
 -- Comentarios de Pefil
+DROP PROCEDURE IF EXISTS sp_commentPerfil$$
+CREATE PROCEDURE sp_commentPerfil(
+    IN IDPU INT,
+    IN IDU INT,
+    IN QUA INT,
+    IN COM TEXT
+)
+BEGIN
+    INSERT INTO
+        Comments(commentary,type_comment,user_id,user_comment,qualification)
+    VALUES
+        (COM,"user",IDU,IDPU,QUA)
+    ;
+
+END$$
+
 -- Comentario de Producto
+DROP PROCEDURE IF EXISTS sp_commentPublication$$
+CREATE PROCEDURE sp_commentPublication(
+    IN IDPU INT,
+    IN IDCO INT,
+    IN COM TEXT
+)
+BEGIN
+    SELECT user_id INTO @user_ FROM Publications WHERE id = IDPU LIMIT 1;
+
+    INSERT INTO
+        Comments(commentary,type_comment,user_id,user_comment,publication_id)
+    VALUES
+        (COM,"publications",@user_,IDCO,IDPU)
+    ;
+END$$
+
+-- Obtener comentarios de Publicacion
+DROP PROCEDURE IF EXISTS sp_getCommentPublicationID$$
+CREATE PROCEDURE sp_getCommentPublicationID(
+    IN IDP INT
+)
+BEGIN
+    SELECT
+        Comments.user_id AS "user_Create_Publication",
+        (SELECT name_user FROM Users WHERE id = Comments.user_id) AS "name_user_create_publication",
+        Comments.user_comment AS "user_Comment_Publication",
+        (SELECT name_user FROM Users WHERE id = Comments.user_comment) AS "name_user_comment",
+        commentary, date_comments, Comments.id AS "id_comment"
+    FROM
+        Comments 
+    JOIN 
+        Users
+    ON
+        Comments.user_id = Users.id
+    WHERE
+        (Comments.publication_id = IDP AND type_comment = "publications")
+    ;
+END$$
+
+-- Obtener comentaios de Perfil
+DROP PROCEDURE IF EXISTS sp_getCommentProfileID$$
+CREATE PROCEDURE sp_getCommentProfileID(
+    IN IDP INT
+)
+BEGIN
+    SELECT
+        Comments.user_id AS "user_Create_Publication",
+        (SELECT name_user FROM Users WHERE id = Comments.user_id) AS "name_user_create_publication",
+        Comments.user_comment AS "user_Comment_Publication",
+        (SELECT name_user FROM Users WHERE id = Comments.user_comment) AS "name_user_comment",
+        commentary, date_comments, qualification, Comments.id AS "id_comment"
+    FROM
+        Comments 
+    JOIN 
+        Users
+    ON
+        Comments.user_id = Users.id
+    WHERE
+        (Comments.user_id = IDP AND type_comment = "user")
+    ;
+END$$
+
+-- Obtener Calificacion de vendedor
+DROP PROCEDURE IF EXISTS sp_getQualificationID$$
+CREATE PROCEDURE sp_getQualificationID(
+    IN IDP INT
+)
+BEGIN
+    SELECT
+       Users.name_user AS "name_user", AVG(qualification) AS "qualification" 
+    FROM
+        Comments 
+    JOIN 
+        Users
+    ON
+        Comments.user_id = Users.id
+    WHERE
+        (Comments.user_id = IDP AND type_comment = "user")
+    ;
+END$$
+
 DELIMITER ;

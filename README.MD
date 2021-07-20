@@ -1,10 +1,10 @@
 ## DOCUMENTACION DE LA BASE DE DATOS
 
-### ***UPDATED*** : 08-07-2021
+### ***UPDATED*** : 20-07-2021
 ___
 ___
 
-### ***------------------------------------------------- Stored Procedures -------------------------------------------------***
+### ***------------------------------------------- Stored Procedures -------------------------------------------***
 
 ### ***Users***
 ---
@@ -148,5 +148,77 @@ ___
         - nombre de las imagenes
         - fecha de subida de la imagen
         - formato de la imagen (PNG/JPG)
+    
+### ***Filters***
+---
 
+15. **sp_searchPublication()**
+    - ***Parametros:***
+        - Texto que desea buscar
+    - ***Retorno:***
+        - Todas las publicaciones con esa coincidencia
+
+16. **sp_filteredPublication()**
+    - ***Parametros:***
+        - Categoria -> 'Hogar'
+        - Departamento -> 'Atlantida'
+        - Municipio -> 'Tela'
+        - Rango Inferior -> 0
+        - Rango Superior -> 500000
+        - Ordenar por fecha -> reciente
+        - Ordenar por precio -> caro
+    - ***Retorno:***
+        - Todas las publicacione que coincidan con los filtros
+- **NOTA: En caso de no mandar algun filtro mandar una cadena vacia -> ''**
+
+### ***Comments***
+---
+17. **sp_commentPerfil()**
+    - ***Parametros:***
+        - ID del perfil que se desea comentar
+        - ID del Usuario que comenta
+        - Calificacion que se le da a ese usuario del 1 al 5
+        - Comentario
+    - ***Retorno:***
+        - Ninguno
+
+18. **sp_commentPublication()**
+    - ***Parametros:***
+        - ID de la publicacion
+        - ID del usuario que comenta
+        - Comentario
+    - ***Retorno:***
+        - Ninguno
+
+19. **sp_getCommentPublicationID()**
+    - ***Parametros:***
+        - ID del Producto
+    - ***Retorno:***
+        - ID del Usuario que creo la publicacion
+        - Nombre del Usuario que creo la publicacion
+        - ID del usuario que comento
+        - Nombre del usuario que comento
+        - Comentario
+        - fecha del comentario
+        - ID del comentario
+
+20. **sp_getCommentProfileID()**
+    - ***Parametros:***
+        - ID del Perfil
+    - ***Retorno:***
+        - ID del Usuario que creo la publicacion
+        - Nombre del Usuario que creo la publicacion
+        - ID del usuario que comento
+        - Nombre del usuario que comento
+        - Comentario
+        - fecha del comentario
+        - calificacion que le dio ese usuario al creador de la publicacion
+        - ID del comentario
+
+21. **sp_getQualificationID()**
+    - ***Parametros:***
+        - ID del Perfil
+    - ***Retorno:***
+        - Nombre del Usuario
+        - Calificacion Promedio del Usuario
 
