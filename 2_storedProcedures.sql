@@ -616,7 +616,7 @@ BEGIN
     INSERT INTO
         Comments(commentary,type_comment,user_id,user_comment,qualification)
     VALUES
-        (COM,"user",IDU,IDPU,QUA)
+        (COM,"user",IDPU,IDU,QUA)
     ;
 
 END$$
@@ -691,7 +691,7 @@ CREATE PROCEDURE sp_getQualificationID(
 )
 BEGIN
     SELECT
-       Users.name_user AS "name_user", AVG(qualification) AS "qualification" 
+		Users.name_user AS "name", AVG(Comments.qualification) AS "qualification"
     FROM
         Comments 
     JOIN 
@@ -699,7 +699,9 @@ BEGIN
     ON
         Comments.user_id = Users.id
     WHERE
-        (Comments.user_id = IDP AND type_comment = "user")
+        Comments.user_id = IDP AND type_comment = "user"
+	GROUP BY 
+		Users.name_user
     ;
 END$$
 
