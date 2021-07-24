@@ -155,6 +155,8 @@ ___
 15. **sp_searchPublication()**
     - ***Parametros:***
         - Texto que desea buscar
+        - Ordenar por fecha
+        - Ordenar por precio
     - ***Retorno:***
         - Todas las publicaciones con esa coincidencia
 

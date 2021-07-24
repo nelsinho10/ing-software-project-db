@@ -423,12 +423,177 @@ END$$
 -- Buscar Publicacion
 DROP PROCEDURE IF EXISTS sp_searchPublication$$
 CREATE PROCEDURE sp_searchPublication(
-    IN TEX VARCHAR(200)
+    IN TEX VARCHAR(200),
+    IN ORDATE VARCHAR(200),
+    IN ORPRICE VARCHAR(200)
 )
 BEGIN
 
-    IF(TEX != '') THEN
+    IF(TEX != '' AND ORDATE = 'reciente' AND ORPRICE = '') THEN
         SELECT
+            Publications.id AS "id_publication", 
+            title, desc_publication AS "description", 
+            price,date_publication AS "date_publication",
+            Categories.name_category AS "category",
+            user_id AS "id_user", Users.name_user AS "name_user",
+            Users.email AS "email", Users.phone AS "phone",
+            Departments.name_department AS "depto",
+            Municipality.name_municipality AS "munic"
+        FROM
+            Publications
+        JOIN
+            Users
+        ON 
+            Publications.user_id = Users.id
+        JOIN
+            Departments
+        ON
+            Publications.department_id = Departments.id
+        JOIN
+            Municipality
+        ON
+            Publications.municipality_id = Municipality.id
+        JOIN
+            Categories
+        ON 
+            Publications.category_id = Categories.id
+        WHERE
+            (state_publication = TRUE 
+            AND 
+                Categories.state_category = TRUE 
+            AND 
+                (Publications.title LIKE CONCAT('%',TEX,'%')
+            OR 
+                Publications.desc_publication LIKE CONCAT('%',TEX,'%'))
+            )
+		ORDER BY 
+				Publications.date_publication DESC
+        ;
+        
+	ELSEIF (TEX != '' AND ORDATE = '' AND ORPRICE = 'caro') THEN 
+    SELECT
+            Publications.id AS "id_publication", 
+            title, desc_publication AS "description", 
+            price,date_publication AS "date_publication",
+            Categories.name_category AS "category",
+            user_id AS "id_user", Users.name_user AS "name_user",
+            Users.email AS "email", Users.phone AS "phone",
+            Departments.name_department AS "depto",
+            Municipality.name_municipality AS "munic"
+        FROM
+            Publications
+        JOIN
+            Users
+        ON 
+            Publications.user_id = Users.id
+        JOIN
+            Departments
+        ON
+            Publications.department_id = Departments.id
+        JOIN
+            Municipality
+        ON
+            Publications.municipality_id = Municipality.id
+        JOIN
+            Categories
+        ON 
+            Publications.category_id = Categories.id
+        WHERE
+            (state_publication = TRUE 
+            AND 
+                Categories.state_category = TRUE 
+            AND 
+                (Publications.title LIKE CONCAT('%',TEX,'%')
+            OR 
+                Publications.desc_publication LIKE CONCAT('%',TEX,'%'))
+            )
+		ORDER BY 
+				Publications.price DESC
+        ;
+        ELSEIF (TEX != '' AND ORDATE = 'antiguo' AND ORPRICE = '') THEN 
+    SELECT
+            Publications.id AS "id_publication", 
+            title, desc_publication AS "description", 
+            price,date_publication AS "date_publication",
+            Categories.name_category AS "category",
+            user_id AS "id_user", Users.name_user AS "name_user",
+            Users.email AS "email", Users.phone AS "phone",
+            Departments.name_department AS "depto",
+            Municipality.name_municipality AS "munic"
+        FROM
+            Publications
+        JOIN
+            Users
+        ON 
+            Publications.user_id = Users.id
+        JOIN
+            Departments
+        ON
+            Publications.department_id = Departments.id
+        JOIN
+            Municipality
+        ON
+            Publications.municipality_id = Municipality.id
+        JOIN
+            Categories
+        ON 
+            Publications.category_id = Categories.id
+        WHERE
+            (state_publication = TRUE 
+            AND 
+                Categories.state_category = TRUE 
+            AND 
+                (Publications.title LIKE CONCAT('%',TEX,'%')
+            OR 
+                Publications.desc_publication LIKE CONCAT('%',TEX,'%'))
+            )
+		ORDER BY 
+				Publications.date_publication ASC
+        ;
+        
+        ELSEIF (TEX != '' AND ORDATE = '' AND ORPRICE = 'barato') THEN 
+    SELECT
+            Publications.id AS "id_publication", 
+            title, desc_publication AS "description", 
+            price,date_publication AS "date_publication",
+            Categories.name_category AS "category",
+            user_id AS "id_user", Users.name_user AS "name_user",
+            Users.email AS "email", Users.phone AS "phone",
+            Departments.name_department AS "depto",
+            Municipality.name_municipality AS "munic"
+        FROM
+            Publications
+        JOIN
+            Users
+        ON 
+            Publications.user_id = Users.id
+        JOIN
+            Departments
+        ON
+            Publications.department_id = Departments.id
+        JOIN
+            Municipality
+        ON
+            Publications.municipality_id = Municipality.id
+        JOIN
+            Categories
+        ON 
+            Publications.category_id = Categories.id
+        WHERE
+            (state_publication = TRUE 
+            AND 
+                Categories.state_category = TRUE 
+            AND 
+                (Publications.title LIKE CONCAT('%',TEX,'%')
+            OR 
+                Publications.desc_publication LIKE CONCAT('%',TEX,'%'))
+            )
+		ORDER BY 
+				Publications.price ASC
+        ;
+        
+	ELSE
+		 SELECT
             Publications.id AS "id_publication", 
             title, desc_publication AS "description", 
             price,date_publication AS "date_publication",
@@ -481,125 +646,207 @@ CREATE PROCEDURE sp_filteredPublication(
 )
 BEGIN  
    IF(ORDATE = 'reciente' AND ORPRICE = '') THEN
-    SELECT
-	    Publications.id AS "id_publication", 
-        title, desc_publication AS "description", 
-        price,date_publication AS "date_publication",
-        Categories.name_category AS "category",
-        user_id AS "id_user", Users.name_user AS "name_user",
-        Users.email AS "email", Users.phone AS "phone",
-        Departments.name_department AS "depto",
-        Municipality.name_municipality AS "munic"
-    FROM
-    	Publications
-    JOIN
-    	Users
-    ON 
-    	Publications.user_id = Users.id
-    JOIN
-    	Departments
-    ON
-    	Publications.department_id = Departments.id
-    JOIN
-    	Municipality
-    ON
-    	Publications.municipality_id = Municipality.id
-    JOIN
-    	Categories
-    ON 
-    	Publications.category_id = Categories.id
-    WHERE
-    	(state_publication = TRUE AND 
-        Categories.state_category = TRUE AND
-        (
-            Categories.name_category REGEXP IF(CAT='','.',CONCAT('^',CAT,'$')) AND
-            Departments.name_department REGEXP IF(DEP='','.',CONCAT('^',DEP,'$')) AND
-            Municipality.name_municipality REGEXP IF(MUN='','.',CONCAT('^',MUN,'$')) AND
-            (Publications.price BETWEEN RANINF AND RANSUP)
-        )
-        )
-    ORDER BY 
-        Publications.date_publication DESC
-    ;
+        SELECT
+            Publications.id AS "id_publication", 
+            title, desc_publication AS "description", 
+            price,date_publication AS "date_publication",
+            Categories.name_category AS "category",
+            user_id AS "id_user", Users.name_user AS "name_user",
+            Users.email AS "email", Users.phone AS "phone",
+            Departments.name_department AS "depto",
+            Municipality.name_municipality AS "munic"
+        FROM
+            Publications
+        JOIN
+            Users
+        ON 
+            Publications.user_id = Users.id
+        JOIN
+            Departments
+        ON
+            Publications.department_id = Departments.id
+        JOIN
+            Municipality
+        ON
+            Publications.municipality_id = Municipality.id
+        JOIN
+            Categories
+        ON 
+            Publications.category_id = Categories.id
+        WHERE
+            (state_publication = TRUE AND 
+            Categories.state_category = TRUE AND
+            (
+                Categories.name_category REGEXP IF(CAT='','.',CONCAT('^',CAT,'$')) AND
+                Departments.name_department REGEXP IF(DEP='','.',CONCAT('^',DEP,'$')) AND
+                Municipality.name_municipality REGEXP IF(MUN='','.',CONCAT('^',MUN,'$')) AND
+                (Publications.price BETWEEN RANINF AND RANSUP)
+            )
+            )
+        ORDER BY 
+            Publications.date_publication DESC
+        ;
    ELSEIF(ORDATE = '' AND ORPRICE = 'caro') THEN
-    SELECT
-	    Publications.id AS "id_publication", 
-        title, desc_publication AS "description", 
-        price,date_publication AS "date_publication",
-        Categories.name_category AS "category",
-        user_id AS "id_user", Users.name_user AS "name_user",
-        Users.email AS "email", Users.phone AS "phone",
-        Departments.name_department AS "depto",
-        Municipality.name_municipality AS "munic"
-    FROM
-    	Publications
-    JOIN
-    	Users
-    ON 
-    	Publications.user_id = Users.id
-    JOIN
-    	Departments
-    ON
-    	Publications.department_id = Departments.id
-    JOIN
-    	Municipality
-    ON
-    	Publications.municipality_id = Municipality.id
-    JOIN
-    	Categories
-    ON 
-    	Publications.category_id = Categories.id
-    WHERE
-    	(state_publication = TRUE AND 
-        Categories.state_category = TRUE AND
-        (
-            Categories.name_category REGEXP IF(CAT='','.',CONCAT('^',CAT,'$')) AND
-            Departments.name_department REGEXP IF(DEP='','.',CONCAT('^',DEP,'$')) AND
-            Municipality.name_municipality REGEXP IF(MUN='','.',CONCAT('^',MUN,'$')) AND
-            (Publications.price BETWEEN RANINF AND RANSUP)
-        )
-        )
-    ORDER BY 
-        Publications.price DESC
+        SELECT
+            Publications.id AS "id_publication", 
+            title, desc_publication AS "description", 
+            price,date_publication AS "date_publication",
+            Categories.name_category AS "category",
+            user_id AS "id_user", Users.name_user AS "name_user",
+            Users.email AS "email", Users.phone AS "phone",
+            Departments.name_department AS "depto",
+            Municipality.name_municipality AS "munic"
+        FROM
+            Publications
+        JOIN
+            Users
+        ON 
+            Publications.user_id = Users.id
+        JOIN
+            Departments
+        ON
+            Publications.department_id = Departments.id
+        JOIN
+            Municipality
+        ON
+            Publications.municipality_id = Municipality.id
+        JOIN
+            Categories
+        ON 
+            Publications.category_id = Categories.id
+        WHERE
+            (state_publication = TRUE AND 
+            Categories.state_category = TRUE AND
+            (
+                Categories.name_category REGEXP IF(CAT='','.',CONCAT('^',CAT,'$')) AND
+                Departments.name_department REGEXP IF(DEP='','.',CONCAT('^',DEP,'$')) AND
+                Municipality.name_municipality REGEXP IF(MUN='','.',CONCAT('^',MUN,'$')) AND
+                (Publications.price BETWEEN RANINF AND RANSUP)
+            )
+            )
+        ORDER BY 
+            Publications.price DESC
+        ;
+   ELSEIF(ORDATE = '' AND ORPRICE = 'barato') THEN
+        SELECT
+            Publications.id AS "id_publication", 
+            title, desc_publication AS "description", 
+            price,date_publication AS "date_publication",
+            Categories.name_category AS "category",
+            user_id AS "id_user", Users.name_user AS "name_user",
+            Users.email AS "email", Users.phone AS "phone",
+            Departments.name_department AS "depto",
+            Municipality.name_municipality AS "munic"
+        FROM
+            Publications
+        JOIN
+            Users
+        ON 
+            Publications.user_id = Users.id
+        JOIN
+            Departments
+        ON
+            Publications.department_id = Departments.id
+        JOIN
+            Municipality
+        ON
+            Publications.municipality_id = Municipality.id
+        JOIN
+            Categories
+        ON 
+            Publications.category_id = Categories.id
+        WHERE
+            (state_publication = TRUE AND 
+            Categories.state_category = TRUE AND
+            (
+                Categories.name_category REGEXP IF(CAT='','.',CONCAT('^',CAT,'$')) AND
+                Departments.name_department REGEXP IF(DEP='','.',CONCAT('^',DEP,'$')) AND
+                Municipality.name_municipality REGEXP IF(MUN='','.',CONCAT('^',MUN,'$')) AND
+                (Publications.price BETWEEN RANINF AND RANSUP)
+            )
+            )
+        ORDER BY 
+            Publications.price ASC
+        ;
+   ELSEIF(ORDATE = 'antiguo' AND ORPRICE = 'caro') THEN
+        SELECT
+            Publications.id AS "id_publication", 
+            title, desc_publication AS "description", 
+            price,date_publication AS "date_publication",
+            Categories.name_category AS "category",
+            user_id AS "id_user", Users.name_user AS "name_user",
+            Users.email AS "email", Users.phone AS "phone",
+            Departments.name_department AS "depto",
+            Municipality.name_municipality AS "munic"
+        FROM
+            Publications
+        JOIN
+            Users
+        ON 
+            Publications.user_id = Users.id
+        JOIN
+            Departments
+        ON
+            Publications.department_id = Departments.id
+        JOIN
+            Municipality
+        ON
+            Publications.municipality_id = Municipality.id
+        JOIN
+            Categories
+        ON 
+            Publications.category_id = Categories.id
+        WHERE
+            (state_publication = TRUE AND 
+            Categories.state_category = TRUE AND
+            (
+                Categories.name_category REGEXP IF(CAT='','.',CONCAT('^',CAT,'$')) AND
+                Departments.name_department REGEXP IF(DEP='','.',CONCAT('^',DEP,'$')) AND
+                Municipality.name_municipality REGEXP IF(MUN='','.',CONCAT('^',MUN,'$')) AND
+                (Publications.price BETWEEN RANINF AND RANSUP)
+            )
+            )
+        ORDER BY 
+            Publications.date_publication DESC
     ;
    ELSE
-    SELECT
-	    Publications.id AS "id_publication", 
-        title, desc_publication AS "description", 
-        price,date_publication AS "date_publication",
-        Categories.name_category AS "category",
-        user_id AS "id_user", Users.name_user AS "name_user",
-        Users.email AS "email", Users.phone AS "phone",
-        Departments.name_department AS "depto",
-        Municipality.name_municipality AS "munic"
-    FROM
-    	Publications
-    JOIN
-    	Users
-    ON 
-    	Publications.user_id = Users.id
-    JOIN
-    	Departments
-    ON
-    	Publications.department_id = Departments.id
-    JOIN
-    	Municipality
-    ON
-    	Publications.municipality_id = Municipality.id
-    JOIN
-    	Categories
-    ON 
-    	Publications.category_id = Categories.id
-    WHERE
-    	(state_publication = TRUE AND 
-        Categories.state_category = TRUE AND
-        (
-            Categories.name_category REGEXP IF(CAT='','.',CONCAT('^',CAT,'$')) AND
-            Departments.name_department REGEXP IF(DEP='','.',CONCAT('^',DEP,'$')) AND
-            Municipality.name_municipality REGEXP IF(MUN='','.',CONCAT('^',MUN,'$')) AND
-            (Publications.price BETWEEN RANINF AND RANSUP)
-        )
-        );
+        SELECT
+            Publications.id AS "id_publication", 
+            title, desc_publication AS "description", 
+            price,date_publication AS "date_publication",
+            Categories.name_category AS "category",
+            user_id AS "id_user", Users.name_user AS "name_user",
+            Users.email AS "email", Users.phone AS "phone",
+            Departments.name_department AS "depto",
+            Municipality.name_municipality AS "munic"
+        FROM
+            Publications
+        JOIN
+            Users
+        ON 
+            Publications.user_id = Users.id
+        JOIN
+            Departments
+        ON
+            Publications.department_id = Departments.id
+        JOIN
+            Municipality
+        ON
+            Publications.municipality_id = Municipality.id
+        JOIN
+            Categories
+        ON 
+            Publications.category_id = Categories.id
+        WHERE
+            (state_publication = TRUE AND 
+            Categories.state_category = TRUE AND
+            (
+                Categories.name_category REGEXP IF(CAT='','.',CONCAT('^',CAT,'$')) AND
+                Departments.name_department REGEXP IF(DEP='','.',CONCAT('^',DEP,'$')) AND
+                Municipality.name_municipality REGEXP IF(MUN='','.',CONCAT('^',MUN,'$')) AND
+                (Publications.price BETWEEN RANINF AND RANSUP)
+            )
+            );
     
    END IF;
 END$$
