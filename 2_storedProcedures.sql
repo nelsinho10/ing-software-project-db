@@ -95,7 +95,8 @@ BEGIN
             Users.name_user AS "name",
             phone, name_department AS "department", 
             name_municipality AS "municipality", 
-            description AS "direction", date_registered
+            description AS "direction", 
+            date_registered, rol
         FROM 
             Users 
         JOIN 
@@ -860,11 +861,29 @@ CREATE PROCEDURE sp_commentProfile(
     IN COM TEXT
 )
 BEGIN
-    INSERT INTO
-        Comments(commentary,type_comment,user_id,user_comment,qualification)
-    VALUES
-        (COM,"user",IDPU,IDU,QUA)
-    ;
+
+    SET @qf = NULL;
+    SELECT qualification INTO @qf FROM Comments WHERE Comments.user_id = IDPU AND Comments.user_comment = IDU LIMIT 1;
+    SELECT id INTO @idf FROM Comments WHERE Comments.user_id = IDPU AND Comments.user_comment = IDU LIMIT 1;
+    
+    IF(@qf IS NULL) THEN
+        INSERT INTO
+            Comments(commentary,type_comment,user_id,user_comment,qualification)
+        VALUES
+            (COM,"user",IDPU,IDU,QUA)
+        ;
+
+    ELSE
+
+        UPDATE 
+            Comments
+        SET
+            commentary = COM, type_comment= "user", user_id = IDPU,user_comment = IDU, qualification = QUA
+        WHERE
+            Comments.id = @idf
+        ;
+
+    END IF;
 
 END$$
 
@@ -949,6 +968,170 @@ BEGIN
         Comments.user_id = IDP AND type_comment = "user"
 	GROUP BY 
 		Users.name_user
+    ;
+END$$
+
+-- Denuncia al Vendedor
+DROP PROCEDURE IF EXISTS sp_addTypeComplaints$$
+CREATE PROCEDURE sp_addTypeComplaints(
+    IN TCOMPLAINT VARCHAR(200)
+)
+BEGIN
+    INSERT INTO
+        TypeComplaints(name_complaint)
+    VALUES
+        (TCOMPLAINT)
+    ;
+END$$
+
+DROP PROCEDURE IF EXISTS sp_getTypeComplaints$$
+CREATE PROCEDURE sp_getTypeComplaints()
+BEGIN
+    SELECT
+         * 
+    FROM 
+        TypeComplaints
+    ;
+END$$
+
+DROP PROCEDURE IF EXISTS sp_addComplaint$$
+CREATE PROCEDURE sp_addComplaint(
+    IN USERID INT,
+    IN DENOUNCED INT,
+    IN TCOMPLAINT INT,
+    IN COMMENT TEXT
+)
+BEGIN
+    INSERT INTO
+        Complaints(user_id,denounced_id,type_complaints_id,commentary)
+    VALUES
+        (USERID,DENOUNCED,TCOMPLAINT,COMMENT)
+    ;
+END$$
+
+DROP PROCEDURE IF EXISTS sp_getComplaint$$
+CREATE PROCEDURE sp_getComplaint()
+BEGIN
+	SELECT
+        Complaints.id AS "id",
+        Complaints.user_id AS "user_id",
+        (SELECT name_user FROM Users WHERE id = Complaints.user_id) AS "name_user",
+        Complaints.denounced_id AS "denounced_id", 
+        (SELECT name_user FROM Users WHERE id = Complaints.denounced_id) AS "name_denounced",
+        Complaints.type_complaints_id AS "type_complaints_id",
+        TypeComplaints.name_Complaint AS "name_type_complaints",
+        Complaints.commentary AS "commentary",
+        Complaints.date_complaints AS "date"
+    FROM
+        Complaints
+    JOIN 
+        Users
+    ON 
+        Complaints.user_id = Users.id
+    JOIN
+        TypeComplaints
+    ON
+        Complaints.type_complaints_id = TypeComplaints.id
+    ;
+END$$
+
+-- Lista de Deseos
+DROP PROCEDURE IF EXISTS sp_addWishList$$
+CREATE PROCEDURE sp_addWishList(
+    IN IDP INT,
+    IN USER INT
+)
+BEGIN
+    INSERT INTO
+        WishList(publication_id, user_id, state_wish)
+    VALUES
+        (IDP,USER,1)
+    ;
+END$$
+
+DROP PROCEDURE IF EXISTS sp_getWishListUser$$
+CREATE PROCEDURE sp_getWishListUser(
+    IN IDU INT
+)
+BEGIN
+
+    SELECT
+        Publications.id AS "id_publication",
+        Publications.title AS "title",
+        Publications.desc_publication AS "description", 
+        Publications.price AS "price",
+        Publications.date_publication AS "date_publication",
+        Categories.name_category AS "category",
+        (SELECT id FROM Users WHERE Users.id = Publications.user_id) AS "id_user",
+        (SELECT name_user FROM Users WHERE Users.id = Publications.user_id) AS "name_user",
+        (SELECT email FROM Users WHERE Users.id = Publications.user_id) AS "email",
+        (SELECT phone FROM Users WHERE Users.id = Publications.user_id) AS "phone",
+        (SELECT name_department FROM Departments WHERE Departments.id = Publications.department_id) AS "depto",
+        (SELECT name_municipality FROM Municipality WHERE Municipality.id = Publications.municipality_id) AS "mun"
+    FROM 
+        WishList
+    JOIN
+        Publications
+    ON
+        WishList.publication_id = Publications.id
+    JOIN
+        Users
+    ON
+        WishList.user_id = Users.id
+    JOIN
+        Categories
+    ON
+        Publications.category_id = Categories.id
+    JOIN
+        Departments
+    ON
+        Publications.department_id = Departments.id
+    JOIN
+        Municipality
+    ON
+        Publications.municipality_id = Municipality.id
+    WHERE
+        WishList.user_id = IDU
+    ;
+END$$
+
+-- Suscripcion de Categorias
+DROP PROCEDURE IF EXISTS sp_addSuscriptions$$
+CREATE PROCEDURE sp_addSuscriptions(
+    IN IDU INT,
+    IN CAT INT
+)
+BEGIN
+    INSERT INTO 
+        Suscriptions(user_id, category_id)
+    VALUES
+        (IDU,CAT)
+    ;
+END$$
+
+DROP PROCEDURE IF EXISTS sp_getSuscriptionsUser$$
+CREATE PROCEDURE sp_getSuscriptionsUser(
+    IN IDU INT
+)
+BEGIN
+    SELECT
+        Suscriptions.user_id AS "user_id",
+        Users.name_user AS "name_user",
+        Suscriptions.category_id AS "category_id",
+        Categories.name_category AS "name_category",
+        Suscriptions.date_suscriptions AS "date"
+    FROM
+        Suscriptions
+    JOIN
+        Users
+    ON
+        Suscriptions.user_id = Users.id
+    JOIN
+        Categories
+    ON
+        Suscriptions.category_id = Categories.id
+    WHERE
+        Suscriptions.user_id = IDU
     ;
 END$$
 

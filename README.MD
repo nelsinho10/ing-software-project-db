@@ -1,6 +1,6 @@
 ## DOCUMENTACION DE LA BASE DE DATOS
 
-### ***UPDATED*** : 20-07-2021
+### ***UPDATED*** : 29-07-2021
 ___
 ___
 
@@ -223,4 +223,75 @@ ___
     - ***Retorno:***
         - Nombre del Usuario
         - Calificacion Promedio del Usuario
+
+### ***Complaints***
+---
+
+22. **sp_addTypeComplaints()**
+    - ***Parametros:***
+        - Tipo de denuncia
+    - ***Retorno:***
+        - Ninguno
+    - **NOTA: Este SP se usa para crear tipos de denuncia desde el modulo de administracion ''**
+
+23. **sp_getTypeComplaints()**
+    - ***Parametros:***
+        - Ninguno
+    - ***Retorno:***
+        - ID del tipo de denuncia
+        - nombre del tipo de denuncia
+
+24. **sp_addComplaint()**
+    - ***Parametros:***
+        - ID del usuario que hace la denuncia
+        - ID del usuario al que estan denunciando
+        - ID del tipo de denuncia
+        - Comentario de denuncia
+    - ***Retorno:***
+        - Ninguno
+
+25. **sp_getComplaint()**
+    - ***Parametros:***
+        - Ninguno
+    - ***Retorno:***
+        - ID de la denuncia
+        - ID del usuario que hace la denuncia
+        - nombre del usuario que hace la denuncia
+        - ID del usuario al que estan denunciando
+        - nombre del usuario al que estan denunciando
+        - ID del tipo de denuncia
+        - tipo de denuncia
+        - Comentario de denuncia
+        - Fecha de la denuncia
+
+### ***WishList***
+---
+
+26. **sp_getWishListUser()**
+    - ***Parametros:***
+        - ID del usuario
+    - ***Retorno:***
+        - Productos de la lista de deseos
+
+27. **sp_addWishList()**
+    - ***Parametros:***
+        - ID del Producto
+        - ID del Usuario
+    - ***Retorno:***
+        - Productos de la lista de deseos
+
+### ***WishList***
+---
+28. **sp_addSuscriptions()**
+    - ***Parametros:***
+        - ID del usuario
+        - Categoria a la que se suscribio
+    - ***Retorno:***
+        - Ninguno
+
+29. **sp_getSuscriptionsUser()**
+    - ***Parametros:***
+        - ID del usuario
+    - ***Retorno:***
+        - Suscripciones de categoria
 

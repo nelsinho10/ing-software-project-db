@@ -138,6 +138,7 @@ CREATE TABLE IF NOT EXISTS Suscriptions(
     user_id INT,
     category_id INT,
     date_suscriptions TIMESTAMP DEFAULT NOW(),
+    state_suscriptions BOOLEAN DEFAULT TRUE,
     PRIMARY KEY(user_id, category_id),
     FOREIGN KEY(user_id) REFERENCES Users(id)
     ON DELETE CASCADE ON UPDATE CASCADE,

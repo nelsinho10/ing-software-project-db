@@ -341,3 +341,12 @@ VALUES
     ("Negocios"),
     ("Empleo")
 ;
+
+INSERT INTO
+    TypeComplaints(name_complaint)
+VALUES
+    ("Fraude"),
+    ("Venta de Productos Ilegales"),
+    ("Publicidad engañosa"),
+    ("otros")
+;
