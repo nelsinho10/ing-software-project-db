@@ -280,7 +280,7 @@ ___
     - ***Retorno:***
         - Productos de la lista de deseos
 
-### ***WishList***
+### ***Suscriptions***
 ---
 28. **sp_addSuscriptions()**
     - ***Parametros:***
