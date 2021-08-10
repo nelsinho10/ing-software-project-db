@@ -112,7 +112,7 @@ BEGIN
         ON 
             Municipality.id_department = Departments.id
         WHERE
-            Users.id = @user_id
+            Users.id = @user_id AND Users.state_user = 1
         ;
         ELSE
             SELECT 0;
@@ -319,7 +319,8 @@ BEGIN
     ON 
     	Publications.category_id = Categories.id
     WHERE
-    	(state_publication = TRUE AND Categories.state_category = TRUE)
+    	(state_publication = TRUE AND Categories.state_category = TRUE AND
+        Users.state_user = TRUE)
     ;
 END$$
 
@@ -379,6 +380,7 @@ BEGIN
     WHERE
     	(state_publication = TRUE AND 
         Categories.state_category = TRUE AND
+        Users.state_user = TRUE AND
         user_id = IDUSER)
     ;
 END$$
@@ -419,7 +421,8 @@ BEGIN
     	Publications.category_id = Categories.id
     WHERE
     	(state_publication = TRUE 
-        AND Categories.state_category = TRUE 
+        AND Categories.state_category = TRUE
+        AND Users.state_user = TRUE  
         AND Publications.id = IDP)
     ;
 END$$
@@ -463,7 +466,9 @@ BEGIN
         ON 
             Publications.category_id = Categories.id
         WHERE
-            (state_publication = TRUE 
+            (state_publication = TRUE
+            AND 
+                Users.state_user = TRUE 
             AND 
                 Categories.state_category = TRUE 
             AND 
@@ -505,7 +510,9 @@ BEGIN
         ON 
             Publications.category_id = Categories.id
         WHERE
-            (state_publication = TRUE 
+            (state_publication = TRUE
+            AND 
+                Users.state_user = TRUE 
             AND 
                 Categories.state_category = TRUE 
             AND 
@@ -547,6 +554,8 @@ BEGIN
             Publications.category_id = Categories.id
         WHERE
             (state_publication = TRUE 
+            AND 
+                Users.state_user = TRUE
             AND 
                 Categories.state_category = TRUE 
             AND 
@@ -590,6 +599,8 @@ BEGIN
         WHERE
             (state_publication = TRUE 
             AND 
+                Users.state_user = TRUE
+            AND 
                 Categories.state_category = TRUE 
             AND 
                 (Publications.title LIKE CONCAT('%',TEX,'%')
@@ -631,6 +642,8 @@ BEGIN
             Publications.category_id = Categories.id
         WHERE
             (state_publication = TRUE 
+            AND 
+                Users.state_user = TRUE
             AND 
                 Categories.state_category = TRUE 
             AND 
@@ -684,7 +697,9 @@ BEGIN
         ON 
             Publications.category_id = Categories.id
         WHERE
-            (state_publication = TRUE AND 
+            (state_publication = TRUE AND
+            
+            Users.state_user = TRUE AND 
             Categories.state_category = TRUE AND
             (
                 Categories.name_category REGEXP IF(CAT='','.',CONCAT('^',CAT,'$')) AND
@@ -727,6 +742,7 @@ BEGIN
             Publications.category_id = Categories.id
         WHERE
             (state_publication = TRUE AND 
+            Users.state_user = TRUE AND 
             Categories.state_category = TRUE AND
             (
                 Categories.name_category REGEXP IF(CAT='','.',CONCAT('^',CAT,'$')) AND
@@ -770,6 +786,7 @@ BEGIN
         WHERE
             (state_publication = TRUE AND 
             Categories.state_category = TRUE AND
+            Users.state_user = TRUE AND 
             (
                 Categories.name_category REGEXP IF(CAT='','.',CONCAT('^',CAT,'$')) AND
                 Departments.name_department REGEXP IF(DEP='','.',CONCAT('^',DEP,'$')) AND
@@ -810,7 +827,8 @@ BEGIN
         ON 
             Publications.category_id = Categories.id
         WHERE
-            (state_publication = TRUE AND 
+            (state_publication = TRUE AND
+            Users.state_user = TRUE AND  
             Categories.state_category = TRUE AND
             (
                 Categories.name_category REGEXP IF(CAT='','.',CONCAT('^',CAT,'$')) AND
@@ -852,7 +870,8 @@ BEGIN
         ON 
             Publications.category_id = Categories.id
         WHERE
-            (state_publication = TRUE AND 
+            (state_publication = TRUE AND
+            Users.state_user = TRUE AND  
             Categories.state_category = TRUE AND
             (
                 Categories.name_category REGEXP IF(CAT='','.',CONCAT('^',CAT,'$')) AND
@@ -1045,6 +1064,8 @@ BEGIN
         TypeComplaints
     ON
         Complaints.type_complaints_id = TypeComplaints.id
+    WHERE
+        state_complaint = TRUE
     ;
 END$$
 
@@ -1105,7 +1126,8 @@ BEGIN
     ON
         Publications.municipality_id = Municipality.id
     WHERE
-        WishList.user_id = IDU
+        WishList.user_id = IDU AND
+        Users.state_user = TRUE  
     ;
 END$$
 
@@ -1149,5 +1171,89 @@ BEGIN
         Suscriptions.user_id = IDU
     ;
 END$$
+
+-- Baja de Anuncio
+DROP PROCEDURE IF EXISTS sp_removeAd$$
+CREATE PROCEDURE sp_removeAdd(
+    IN IDA INT
+)
+BEGIN
+    UPDATE 
+        Publications 
+    SET 
+        state_publication = 0 
+    WHERE 
+        id = IDA;
+END$$
+
+-- Baja de Usuario
+DROP PROCEDURE IF EXISTS sp_removeUser$$
+CREATE PROCEDURE sp_removeUser(
+    IN IDU INT
+)
+BEGIN
+    UPDATE 
+        Users 
+    SET 
+        state_user = 0 
+    WHERE 
+        id = IDU;
+END$$
+
+-- Agregar Categoria
+DROP PROCEDURE IF EXISTS sp_addCategory$$
+CREATE PROCEDURE sp_addCategory(
+    IN NAMECATEGORY VARCHAR(200)
+)
+BEGIN
+    INSERT INTO
+        Categories(name_category)
+    VALUES
+        (NAMECATEGORY)
+    ;
+
+END$$
+
+-- Eliminar Categoria
+DROP PROCEDURE IF EXISTS sp_removeCategory$$
+CREATE PROCEDURE sp_removeCategory(
+    IN IDC INT
+)
+BEGIN
+    UPDATE 
+        Categories
+    SET 
+        state_category = 0 
+    WHERE 
+        id = IDC;
+END$$
+
+
+-- Estimar denuncia
+DROP PROCEDURE IF EXISTS sp_estimateComplaint$$
+CREATE PROCEDURE sp_estimateComplaint(
+    IN IDU INT,
+    IN ACTIONUSER VARCHAR(200)
+)
+BEGIN
+    IF(ACTIONUSER = 'baja') THEN
+        call sp_removeUser(IDU);
+        UPDATE
+            Complaints
+        SET 
+            state_complaint = 0
+        WHERE
+             denounced_id = IDU;
+    ELSE 
+        UPDATE
+            Complaints
+        SET 
+            state_complaint = 0
+        WHERE
+             denounced_id = IDU;
+    END IF;
+
+END$$
+
 
 DELIMITER ;

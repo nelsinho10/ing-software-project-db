@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS Users(
     rol ENUM("USER", "ADMIN") DEFAULT "USER" NOT NULL,
     direction_id INT ,
     date_registered TIMESTAMP DEFAULT NOW(),
+    state_user BOOLEAN NOT NULL DEFAULT TRUE,
     FOREIGN KEY(direction_id) REFERENCES Direction(id)
     ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -98,7 +99,8 @@ CREATE TABLE IF NOT EXISTS Complaints(
     denounced_id INT NOT NULL,
     type_complaints_id INT NOT NULL,
     commentary TEXT NOT NULL,
-    date_complaints TIMESTAMP DEFAULT NOW(), 
+    date_complaints TIMESTAMP DEFAULT NOW(),
+    state_complaint BOOLEAN NOT NULL DEFAULT TRUE,
     FOREIGN KEY(user_id) REFERENCES Users(id)
     ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY(denounced_id) REFERENCES Users(id)

@@ -1,6 +1,6 @@
 ## DOCUMENTACION DE LA BASE DE DATOS
 
-### ***UPDATED*** : 29-07-2021
+### ***UPDATED*** : 10-08-2021
 ___
 ___
 
@@ -295,3 +295,30 @@ ___
     - ***Retorno:***
         - Suscripciones de categoria
 
+### ***Admin***
+---
+30. **sp_removeAd()**
+    - ***Parametros:***
+        - ID del Anuncio
+    - ***Retorno:***
+        - Ninguno
+
+31. **sp_addCategory()**
+    - ***Parametros:***
+        - Nombre de la categoria
+    - ***Retorno:***
+        - Ninguno
+
+32. **sp_removeCategory()**
+    - ***Parametros:***
+        - ID de la categoria
+    - ***Retorno:***
+        - Ninguno
+
+33. **sp_estimateComplaint()**
+     - ***Parametros:***
+        - ID del Usuario
+        - Accion a realizar
+    *NOTA*: Si en la accion le manda *'baja'* se elemina el usuario y sus publicaciones, caso contrario desestima la denuncia.
+    - ***Retorno:***
+        - Ninguno
