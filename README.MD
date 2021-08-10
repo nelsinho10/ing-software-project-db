@@ -322,3 +322,16 @@ ___
     *NOTA*: Si en la accion le manda *'baja'* se elemina el usuario y sus publicaciones, caso contrario desestima la denuncia.
     - ***Retorno:***
         - Ninguno
+
+34. **sp_timeAnnouncement()**
+     - ***Parametros:***
+        - Tiempo de los anuncio
+        - Tiempo de los servicios
+    - ***Retorno:***
+        - Ninguno
+
+35. **sp_getConfig()**
+     - ***Parametros:***
+        -Ninguno
+    - ***Retorno:***
+        - Tiempo de anuncio y servicios

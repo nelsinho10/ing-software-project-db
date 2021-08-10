@@ -147,3 +147,9 @@ CREATE TABLE IF NOT EXISTS Suscriptions(
     FOREIGN KEY(category_id) REFERENCES Categories(id)
     ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS Configs(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    time_service INT NOT NULL,
+    time_announcemen INT NOT NULL
+);

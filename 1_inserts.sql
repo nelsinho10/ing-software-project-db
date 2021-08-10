@@ -330,6 +330,7 @@ VALUES
 INSERT INTO
     Categories(name_category)
 VALUES
+    ("Servicios"),
     ("Inmuebles"),
     ("Vehiculos"),
     ("Hogar"),
@@ -337,7 +338,6 @@ VALUES
     ("Futuros padres"),
     ("Mascotas"),
     ("Electronica"),
-    ("Servicios"),
     ("Negocios"),
     ("Empleo")
 ;
@@ -349,4 +349,10 @@ VALUES
     ("Venta de Productos Ilegales"),
     ("Publicidad engañosa"),
     ("otros")
+;
+
+INSERT INTO
+    Configs(time_service,time_announcemen)
+VALUES
+    (10,10)
 ;

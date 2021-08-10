@@ -1174,7 +1174,7 @@ END$$
 
 -- Baja de Anuncio
 DROP PROCEDURE IF EXISTS sp_removeAd$$
-CREATE PROCEDURE sp_removeAdd(
+CREATE PROCEDURE sp_removeAd(
     IN IDA INT
 )
 BEGIN
@@ -1255,5 +1255,51 @@ BEGIN
 
 END$$
 
+-- Tiempo de Anuncios
+DROP PROCEDURE IF EXISTS sp_timeAnnouncement$$
+CREATE PROCEDURE sp_timeAnnouncement(
+    IN TIMEA INT,
+    IN TIMESE INT
+)
+BEGIN
+
+    UPDATE
+        Configs
+    SET
+        time_service = TIMESE,
+        time_announcemen = TIMEA
+    WHERE
+        id = 1
+    ;
+
+    UPDATE
+        Publications
+    SET
+        state_publication = 0
+    WHERE
+        (DATEDIFF(date_publication,NOW()) = TIMEA
+        AND category_id != 1)
+    ;
+
+    UPDATE
+        Publications
+    SET
+        state_publication = 0
+    WHERE
+        (DATEDIFF(date_publication,NOW()) = TIMESE
+        AND category_id = 1)
+    ;
+END $$
+
+-- Obtener los tiempos
+DROP PROCEDURE IF EXISTS sp_getConfig$$
+CREATE PROCEDURE sp_getConfig()
+BEGIN
+    SELECT
+        *
+    FROM
+        Configs
+    ;
+END$$
 
 DELIMITER ;
