@@ -335,3 +335,9 @@ ___
         -Ninguno
     - ***Retorno:***
         - Tiempo de anuncio y servicios
+
+36. **sp_removeUser()**
+     - ***Parametros:***
+        - ID del Usuario
+    - ***Retorno:***
+        - Ninguno
