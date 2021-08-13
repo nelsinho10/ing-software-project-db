@@ -1,6 +1,6 @@
 ## DOCUMENTACION DE LA BASE DE DATOS
 
-### ***UPDATED*** : 10-08-2021
+### ***UPDATED*** : 13-08-2021
 ___
 ___
 
@@ -79,7 +79,8 @@ ___
 
 9. **sp_getPublicationsAll()**
     - ***Parametros:***
-        - ninguno
+        - Rango minimo de las publicaciones a mostrar
+        - Rango maximo de las publicaciones a mostrar
     - ***Retorno:***
         - id de la publicacion
         - titulo de la publicacion
@@ -152,30 +153,24 @@ ___
 ### ***Filters***
 ---
 
-15. **sp_searchPublication()**
+15. **sp_filtered()**
     - ***Parametros:***
         - Texto que desea buscar
-        - Ordenar por fecha
-        - Ordenar por precio
+        - Nombre del Departamento
+        - Nombre del Municipio
+        - Nombre de la categoria
+        - Precio minimo
+        - Precio maximo
+        - Ordenar por fecha -> mandar string 'reciente' o 'antiguo'
+        - Ordenar por precio -> mandar string 'caro' o 'barato'
+        - Rango minimo del paginado
+        - Rango maximo del paginado
     - ***Retorno:***
         - Todas las publicaciones con esa coincidencia
 
-16. **sp_filteredPublication()**
-    - ***Parametros:***
-        - Categoria -> 'Hogar'
-        - Departamento -> 'Atlantida'
-        - Municipio -> 'Tela'
-        - Rango Inferior -> 0
-        - Rango Superior -> 500000
-        - Ordenar por fecha -> reciente
-        - Ordenar por precio -> caro
-    - ***Retorno:***
-        - Todas las publicacione que coincidan con los filtros
-- **NOTA: En caso de no mandar algun filtro mandar una cadena vacia -> ''**
-
 ### ***Comments***
 ---
-17. **sp_commentProfile()**
+16. **sp_commentProfile()**
     - ***Parametros:***
         - ID del perfil que se desea comentar
         - ID del Usuario que comenta
@@ -184,7 +179,7 @@ ___
     - ***Retorno:***
         - Ninguno
 
-18. **sp_commentPublication()**
+17. **sp_commentPublication()**
     - ***Parametros:***
         - ID de la publicacion
         - ID del usuario que comenta
@@ -192,7 +187,7 @@ ___
     - ***Retorno:***
         - Ninguno
 
-19. **sp_getCommentPublicationID()**
+18. **sp_getCommentPublicationID()**
     - ***Parametros:***
         - ID del Producto
     - ***Retorno:***
@@ -204,7 +199,7 @@ ___
         - fecha del comentario
         - ID del comentario
 
-20. **sp_getCommentProfileID()**
+19. **sp_getCommentProfileID()**
     - ***Parametros:***
         - ID del Perfil
     - ***Retorno:***
@@ -217,7 +212,7 @@ ___
         - calificacion que le dio ese usuario al creador de la publicacion
         - ID del comentario
 
-21. **sp_getQualificationID()**
+20. **sp_getQualificationID()**
     - ***Parametros:***
         - ID del Perfil
     - ***Retorno:***
@@ -227,21 +222,21 @@ ___
 ### ***Complaints***
 ---
 
-22. **sp_addTypeComplaints()**
+21. **sp_addTypeComplaints()**
     - ***Parametros:***
         - Tipo de denuncia
     - ***Retorno:***
         - Ninguno
     - **NOTA: Este SP se usa para crear tipos de denuncia desde el modulo de administracion ''**
 
-23. **sp_getTypeComplaints()**
+22. **sp_getTypeComplaints()**
     - ***Parametros:***
         - Ninguno
     - ***Retorno:***
         - ID del tipo de denuncia
         - nombre del tipo de denuncia
 
-24. **sp_addComplaint()**
+23. **sp_addComplaint()**
     - ***Parametros:***
         - ID del usuario que hace la denuncia
         - ID del usuario al que estan denunciando
@@ -250,7 +245,7 @@ ___
     - ***Retorno:***
         - Ninguno
 
-25. **sp_getComplaint()**
+24. **sp_getComplaint()**
     - ***Parametros:***
         - Ninguno
     - ***Retorno:***
@@ -267,13 +262,13 @@ ___
 ### ***WishList***
 ---
 
-26. **sp_getWishListUser()**
+25. **sp_getWishListUser()**
     - ***Parametros:***
         - ID del usuario
     - ***Retorno:***
         - Productos de la lista de deseos
 
-27. **sp_addWishList()**
+26. **sp_addWishList()**
     - ***Parametros:***
         - ID del Producto
         - ID del Usuario
@@ -282,14 +277,14 @@ ___
 
 ### ***Suscriptions***
 ---
-28. **sp_addSuscriptions()**
+27. **sp_addSuscriptions()**
     - ***Parametros:***
         - ID del usuario
         - Categoria a la que se suscribio
     - ***Retorno:***
         - Ninguno
 
-29. **sp_getSuscriptionsUser()**
+28. **sp_getSuscriptionsUser()**
     - ***Parametros:***
         - ID del usuario
     - ***Retorno:***
@@ -297,47 +292,73 @@ ___
 
 ### ***Admin***
 ---
-30. **sp_removeAd()**
+29. **sp_removeAd()**
     - ***Parametros:***
         - ID del Anuncio
     - ***Retorno:***
         - Ninguno
 
-31. **sp_addCategory()**
+30. **sp_addCategory()**
     - ***Parametros:***
         - Nombre de la categoria
     - ***Retorno:***
         - Ninguno
 
-32. **sp_removeCategory()**
+31. **sp_removeCategory()**
     - ***Parametros:***
         - ID de la categoria
     - ***Retorno:***
         - Ninguno
 
-33. **sp_estimateComplaint()**
+32. **sp_estimateComplaint()**
      - ***Parametros:***
         - ID del Usuario
         - Accion a realizar
-    *NOTA*: Si en la accion le manda *'baja'* se elemina el usuario y sus publicaciones, caso contrario desestima la denuncia.
+        - *NOTA*: Si en la accion le manda *'baja'* se elemina el usuario y sus publicaciones, caso contrario desestima la denuncia.
     - ***Retorno:***
         - Ninguno
 
-34. **sp_timeAnnouncement()**
+33. **sp_timeAnnouncement()**
      - ***Parametros:***
-        - Tiempo de los anuncio
+        - Tiempo de los anuncio 
         - Tiempo de los servicios
     - ***Retorno:***
         - Ninguno
 
-35. **sp_getConfig()**
+34. **sp_getConfig()**
      - ***Parametros:***
         -Ninguno
     - ***Retorno:***
         - Tiempo de anuncio y servicios
 
-36. **sp_removeUser()**
+35. **sp_removeUser()**
      - ***Parametros:***
         - ID del Usuario
     - ***Retorno:***
         - Ninguno
+
+### ***Estadisticas***
+---
+36. **sp_statistics()**
+    - ***Parametros:***
+        - Ninguno
+    - ***Retorno:***
+        - Estadisticas relevantes
+
+36. **sp_publicationsXcategories()**
+    - ***Parametros:***
+        - Ninguno
+    - ***Retorno:***
+        - Publicaciones por categorias
+
+### ***Cambios***
+
+- Se agrego un archivo 2_views.sql donde se manejan las vistas utilizadas en algunos sp
+
+- Se eliminan los SP *sp_searchPublication()* y *sp_filteredPublication()* por :
+    - *sp_filtered()*
+
+- Se modifica el SP para el paginado:
+    - *sp_getPublicationsAll()*
+
+
